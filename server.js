@@ -1,5 +1,5 @@
 import { ApolloServer, gql } from "apollo-server";
-import {tweets} from "./dummyData.js";
+import {tweets, users} from "./dummyData.js";
 // const { ApolloServer, gql } = require("apollo-server");
 
 // Get /text
@@ -7,8 +7,10 @@ import {tweets} from "./dummyData.js";
 
 const typeDefs = gql`
     type User {
-        id: ID
-        userName: String
+        id: ID!
+        firstName: String!
+        lastName: String!
+        fullName: String!
     }
 
     type Tweet {
@@ -18,6 +20,7 @@ const typeDefs = gql`
     }
 
     type Query {
+        allUsers: [User!]!
         allTweets: [Tweet]
         tweet(id: ID): Tweet
         ping : String
@@ -25,7 +28,7 @@ const typeDefs = gql`
 
     type Mutation {
         postTweet(text: String!, userId: ID!): Tweet!
-        deleteTweet(id: ID): Boolean
+        deleteTweet(id: ID!): Boolean!
     }
 `;
 
@@ -37,6 +40,10 @@ const resolvers = {
         tweet( __ , {id}){
             return tweets.find(data => data.id === id)
         },
+        allUsers(){
+            console.log("allUsers")
+            return users
+        }
     },
     Mutation: {
         postTweet(__, {text, userId}){
@@ -51,8 +58,15 @@ const resolvers = {
             const delTweet = tweets.find(tweet => tweet.id === id)
             if(!delTweet) return false
             //TODO 만약 JS로 delete를 구현한다면 recoil, contextAPI를 이용한 전영상태관리가 필요
-            const newTweets = tweets.filter(tweet => tweet !== id)
+            tweets = tweets.filter(tweet => tweet !== id)
             return true
+        }
+    },
+    User:{
+        fullName({firstName, lastName}){
+            console.log(firstName, lastName) // fullName을 호출하는 User를 보게된다
+            console.log("fullName")
+            return `${firstName}${lastName}`
         }
     }
 }
