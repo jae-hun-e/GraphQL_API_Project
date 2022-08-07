@@ -18,11 +18,19 @@ export const resolvers = {
     },
     allMovies() {
       console.log("allMovies called");
-      const data = fetch("https://yts.mx/api/v2/list_movies.json")
+      const moviesData = fetch("https://yts.mx/api/v2/list_movies.json")
         .then((r) => r.json())
         .then((json) => json.data.movies);
-      console.log(data);
-      return data;
+      return moviesData;
+    },
+    movie(__, { id }) {
+      console.log("movie called");
+      const movieData = fetch(
+        `https://yts.mx/api/v2/movie_details.json?movie_id=${id}`
+      )
+        .then((r) => r.json())
+        .then((json) => json.data.movie);
+      return movieData;
     },
   },
   Mutation: {
