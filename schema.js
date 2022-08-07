@@ -18,9 +18,15 @@ export const typeDefs = gql`
   id: ID!
   firstName: String!
   lastName: String!
+  """
+  fullName = FirstName + LastName
+  """
   fullName: String!
   }
   
+  """
+  Tweet Schema 구조
+  """
   type Tweet {
   id: ID
   text: String
